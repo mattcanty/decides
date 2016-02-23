@@ -15,6 +15,9 @@
         </form>
       </div>
       <div v-if="group">
+        <span>
+          <button v-on:click="leaveGroup">Leave Group</button>
+        </span>
         <h1>{{ group.title }}</h1>
         <h2>Choices</h2>
         <ul>
@@ -36,9 +39,6 @@
           <input v-model="newChoice.title">
           <input type="submit" value="Add Choice">
         </form>
-        <span>
-          <button v-on:click="leaveGroup">Leave Group</button>
-        </span>
         <h2>Members</h2>
         <ul>
           <li v-for="fingerprint in fingerprints | orderBy 'name'">
@@ -50,6 +50,7 @@
           </li>
         </ul>
       </div>
+      <div v-if="localGroups.length > 0">
         <h2>Nearby</h2>
         <ul>
           <li v-for="group in localGroups | orderBy 'title'">
