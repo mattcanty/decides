@@ -52,7 +52,7 @@ var app = new Vue({
       }
     },
     isValid: function () {
-      var validation = this.validation
+      var validation = this.validation;
       return Object.keys(validation).every(function (key) {
         return validation[key]
       })
@@ -112,6 +112,8 @@ var app = new Vue({
       }
 
       setupGroupSync(groupId);
+
+      announceFingerPrint();
     },
     loadGroup: function (groupId) {
       console.debug('Loading group: ' + groupId);
@@ -120,6 +122,8 @@ var app = new Vue({
       this.vote = null;
 
       setupGroupSync(groupId);
+
+      announceFingerPrint();
     },
     leaveGroup: function () {
       window.location.hash = "";
@@ -233,6 +237,8 @@ function getVote (groupId) {
   if(!app.localFingerprint){
     new Fingerprint2().get(function(result){
       app.localFingerprint = result;
+
+      getVote(groupId);
     });
 
     return;
@@ -240,6 +246,21 @@ function getVote (groupId) {
 
   groupsRef.child(groupId + '/members/' + app.localFingerprint + '/vote').once('value', function (snapshot) {
     app.vote = snapshot.val();
+  });
+}
+
+/**
+ * Members
+ */
+
+function announceFingerPrint () {
+
+
+  groupsRef.child(app.group.id + '/members/' + app.localFingerprint).once('value', function (snapshot) {
+    if(snapshot.exists()){
+      return;
+    }
+    groupsRef.child(app.group.id + '/members/' + app.localFingerprint).set({name: 'Unknown'})
   });
 }
 
